@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FROX — Pain is temporary. Vibes are forever.</title>
+  <meta name="description" content="FROX, le club Hyrox au Havre. Fitness race sans jugement. Rejoins la communauté, crée ton avatar et trouve ton programme.">
+  <meta name="keywords" content="Hyrox Le Havre, fitness race Normandie, FROX club, sport sans jugement">
+
+  <meta property="og:title" content="FROX — Pain is temporary. Vibes are forever.">
+  <meta property="og:description" content="Le fitness race sans jugement. Juste toi contre toi.">
+  <meta property="og:image" content="assets/images/frox-og.jpg">
+  <meta property="og:url" content="https://frox.fr">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FROX — Pain is temporary. Vibes are forever.">
+  <meta name="twitter:image" content="assets/images/frox-og.jpg">
+  <link rel="canonical" href="https://frox.fr">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A0A0A'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='18' fill='%23FFE000'%3EFX%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .word-wrap { display: inline-block; overflow: hidden; vertical-align: bottom; }
+    .word { display: inline-block; }
+  </style>
+</head>
+<body>
+
+  <div id="scroll-progress"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav id="navbar" role="navigation" aria-label="Navigation principale">
+    <a href="#hero" class="nav-logo" aria-label="FROX accueil">FROX</a>
+
+    <ul class="nav-links" role="list">
+      <li><a href="#hyrox">Hyrox</a></li>
+      <li><a href="#mindset">Mindset</a></li>
+      <li><a href="#programmes">Programmes</a></li>
+      <li><a href="#races">Races</a></li>
+      <li><a href="#rejoindre">Rejoindre</a></li>
+    </ul>
+
+    <a href="#rejoindre" class="nav-cta" aria-label="Rejoindre FROX">Show up</a>
+
+    <button class="nav-hamburger" aria-label="Ouvrir le menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <nav class="nav-mobile" aria-label="Menu mobile">
+    <a href="#hyrox">Hyrox</a>
+    <a href="#mindset">Mindset</a>
+    <a href="#programmes">Programmes</a>
+    <a href="#races">Races</a>
+    <a href="#rejoindre">Rejoindre</a>
+    <a href="#rejoindre" class="btn-primary magnetic">Show up.</a>
+  </nav>
+
+  <main>
+    <!-- ===== SECTION 1 — HERO ===== -->
+    <section id="hero" aria-label="Hero">
+      <div class="hero-bg" aria-hidden="true">
+        <img src="assets/images/hero-bg.jpg" alt="" loading="eager" fetchpriority="high">
+      </div>
+      <div class="hero-overlay" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="line line-1">
+            <span class="hero-line-1">Pain is temporary.</span>
+          </span>
+          <span class="line" style="display:block; overflow:hidden; margin-top:0.05em">
+            <span class="hero-line-2">Vibes are forever.</span>
+          </span>
+        </h1>
+        <p class="hero-subtitle">Le fitness race sans jugement. Juste toi contre toi.</p>
+        <div class="hero-cta-group">
+          <a href="#rejoindre" class="btn-primary magnetic" style="font-size:1.05rem; padding:1.1rem 2.8rem">
+            Show up.
+          </a>
+          <p class="hero-microcopy">Peu importe ton niveau. T'as juste à venir.</p>
+        </div>
+      </div>
+
+      <div class="scroll-indicator" aria-hidden="true">
+        <span>Scroll</span>
+        <svg width="18" height="28" viewBox="0 0 18 28" fill="none">
+          <rect x="1" y="1" width="16" height="22" rx="8" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <rect x="7.5" y="5" width="3" height="6" rx="1.5" fill="rgba(255,224,0,0.7)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2 — HYROX ===== -->
+    <section id="hyrox" class="section-dark" aria-labelledby="hyrox-title">
+      <div class="container">
+        <span class="eyebrow">HYROX</span>
+        <h2 id="hyrox-title" class="section-title" data-scramble="8km. 8 stations. 1 vibe.">8km. 8 stations. 1 vibe.</h2>
+        <p class="section-subtitle">Hyrox c'est pas une torture. C'est un trip.</p>
+
+        <div class="hyrox-features">
+          <div class="hyrox-feature">
+            <div class="hyrox-feature__icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M32 8c0 4.4-3.6 8-8 8s-8-3.6-8-8 3.6-8 8-8 8 3.6 8 8z"/>
+                <path d="M8 44l6-14 4 6 6-18 6 18 4-6 6 14"/>
+              </svg>
+            </div>
+            <h3>Tu cours</h3>
+            <p>1km entre chaque station. À ton pace.</p>
+          </div>
+          <div class="hyrox-feature">
+            <div class="hyrox-feature__icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="20" width="40" height="8" rx="2"/>
+                <rect x="12" y="12" width="24" height="8"/>
+                <circle cx="10" cy="24" r="6"/>
+                <circle cx="38" cy="24" r="6"/>
+              </svg>
+            </div>
+            <h3>Tu pousses</h3>
+            <p>Sled push, burpees, wall balls... Des trucs qui font mal mais qui font kiffer.</p>
+          </div>
+          <div class="hyrox-feature">
+            <div class="hyrox-feature__icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="24" cy="24" r="20"/>
+                <path d="M24 4a20 20 0 0 1 0 40"/>
+                <path d="M4 24h40"/>
+                <path d="M7 14h34M7 34h34"/>
+              </svg>
+            </div>
+            <h3>Tu compétis</h3>
+            <p>Une compétition mondiale. Mais d'abord, une communauté locale.</p>
+          </div>
+        </div>
+
+        <div class="hyrox-stats" role="list">
+          <div class="stat-item reveal" role="listitem">
+            <span class="stat-number" data-countup="8" aria-label="8">0</span>
+            <span class="stat-label">km</span>
+          </div>
+          <div class="stat-item reveal" role="listitem">
+            <span class="stat-number" data-countup="8" aria-label="8">0</span>
+            <span class="stat-label">stations</span>
+          </div>
+          <div class="stat-item reveal" role="listitem">
+            <span class="stat-number" data-countup="500000" data-suffix="+" aria-label="plus de 500 000">0+</span>
+            <span class="stat-label">athlètes</span>
+          </div>
+          <div class="stat-item reveal" role="listitem">
+            <span class="stat-number" data-countup="1" aria-label="1">0</span>
+            <span class="stat-label">vibe</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3 — MINDSET ===== -->
+    <section id="mindset" class="section-mid" aria-labelledby="mindset-title">
+      <div class="container">
+        <span class="eyebrow">MINDSET</span>
+        <h2 id="mindset-title" class="section-title">Ici, personne te juge.</h2>
+        <p class="section-subtitle">On s'en fout de ton chrono. On s'en fout de ta morphologie. Ce qui compte c'est que tu kiffes.</p>
+
+        <div class="mindset-values" role="list">
+          <div class="value-card reveal" role="listitem">
+            <h3>No ego</h3>
+            <p>Laisse-le dehors.</p>
+          </div>
+          <div class="value-card reveal" role="listitem">
+            <h3>Your pace</h3>
+            <p>T'as pas à suivre quelqu'un.</p>
+          </div>
+          <div class="value-card reveal" role="listitem">
+            <h3>Dream big</h3>
+            <p>Les limites c'est dans la tête.</p>
+          </div>
+          <div class="value-card reveal" role="listitem">
+            <h3>Enjoy first</h3>
+            <p>La perf suit quand tu t'éclates.</p>
+          </div>
+        </div>
+
+        <div class="coach-block">
+          <div class="coach-photo reveal">
+            <div class="coach-photo-placeholder">COACH PHOTO</div>
+          </div>
+          <div class="reveal">
+            <blockquote>
+              <p class="coach-quote">"Si tu kiffes, t'as déjà gagné."</p>
+            </blockquote>
+            <p class="coach-name">Alex Dumont</p>
+            <p class="coach-title-text">Head Coach FROX — Certifié Hyrox</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4 — PROGRAMMES ===== -->
+    <section id="programmes" class="section-dark" aria-labelledby="programmes-title">
+      <div class="container">
+        <span class="eyebrow">PROGRAMMES</span>
+        <h2 id="programmes-title" class="section-title">Trouve ton game.</h2>
+        <p class="section-subtitle">3 programmes. Pas de bon ou mauvais choix. Juste celui qui te correspond.</p>
+
+        <div class="programmes-grid">
+          <!-- LEAN -->
+          <article class="programme-card">
+            <div class="programme-badge">RUNNER</div>
+            <h3>LEAN</h3>
+            <h4>Endurance</h4>
+            <p>T'es un runner dans l'âme. On va te faire voler.</p>
+            <div class="programme-meta">
+              <div class="programme-meta-item">
+                <strong>4x/semaine</strong>
+                Sessions
+              </div>
+              <div class="programme-meta-item">
+                <strong>12 semaines</strong>
+                Durée
+              </div>
+              <div class="programme-meta-item">
+                <strong>Tous niveaux</strong>
+                Niveau
+              </div>
+            </div>
+            <button class="btn-secondary" data-programme="lean" aria-label="Choisir le programme Lean">C'est mon game</button>
+          </article>
+
+          <!-- ATHLETIC (featured) -->
+          <article class="programme-card featured">
+            <div class="popular-tag">MOST POPULAR</div>
+            <div class="programme-badge">EQUILIBRE</div>
+            <h3>ATHLETIC</h3>
+            <h4>Complet</h4>
+            <p>Force + cardio. Le combo Hyrox par excellence.</p>
+            <div class="programme-meta">
+              <div class="programme-meta-item">
+                <strong>4x/semaine</strong>
+                Sessions
+              </div>
+              <div class="programme-meta-item">
+                <strong>10 semaines</strong>
+                Durée
+              </div>
+              <div class="programme-meta-item">
+                <strong>Intermédiaire</strong>
+                Niveau
+              </div>
+            </div>
+            <button class="btn-primary" data-programme="athletic" aria-label="Choisir le programme Athletic">C'est mon game</button>
+          </article>
+
+          <!-- POWER -->
+          <article class="programme-card">
+            <div class="programme-badge">BEAST</div>
+            <h3>POWER</h3>
+            <h4>Force</h4>
+            <p>Tu pousses fort. On va canaliser ça.</p>
+            <div class="programme-meta">
+              <div class="programme-meta-item">
+                <strong>3x/semaine</strong>
+                Sessions
+              </div>
+              <div class="programme-meta-item">
+                <strong>12 semaines</strong>
+                Durée
+              </div>
+              <div class="programme-meta-item">
+                <strong>Tous niveaux</strong>
+                Niveau
+              </div>
+            </div>
+            <button class="btn-secondary" data-programme="power" aria-label="Choisir le programme Power">C'est mon game</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 5 — RACES ===== -->
+    <section id="races" class="section-mid" aria-labelledby="races-title">
+      <div class="container">
+        <span class="eyebrow">COMPETITIONS</span>
+        <h2 id="races-title" class="section-title">Les prochaines races.</h2>
+        <p class="section-subtitle">Quand t'es prêt. Ou même avant.</p>
+
+        <div class="races-table-wrap">
+          <table class="races-table" aria-label="Calendrier des compétitions">
+            <thead>
+              <tr>
+                <th data-col="0">Date</th>
+                <th data-col="1">Ville</th>
+                <th data-col="2">Type</th>
+                <th data-col="3">Places</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>15 Jan 2027</td>
+                <td>Paris</td>
+                <td>Hyrox Fitness Race</td>
+                <td><span class="badge-full">Complet</span></td>
+              </tr>
+              <tr>
+                <td>12 Mar 2027</td>
+                <td>Lyon</td>
+                <td>Hyrox Fitness Race</td>
+                <td><span class="badge-open">42 restantes</span></td>
+              </tr>
+              <tr>
+                <td>8 Mai 2027</td>
+                <td>Bordeaux</td>
+                <td>Hyrox Doubles</td>
+                <td><span class="badge-open">18 restantes</span></td>
+              </tr>
+              <tr>
+                <td>19 Jul 2027</td>
+                <td>Paris</td>
+                <td>Hyrox Pro Series</td>
+                <td><span class="badge-open">89 restantes</span></td>
+              </tr>
+              <tr>
+                <td>5 Sep 2027</td>
+                <td>Lille</td>
+                <td>Hyrox Fitness Race</td>
+                <td><span class="badge-open">Inscriptions ouvertes</span></td>
+              </tr>
+              <tr>
+                <td>22 Nov 2027</td>
+                <td>Le Havre</td>
+                <td>Hyrox Home Race</td>
+                <td><span class="badge-open">156 restantes</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="gallery-masonry" aria-label="Galerie compétitions">
+          <div class="gallery-item reveal">
+            <div class="gallery-placeholder">RACE PHOTO</div>
+          </div>
+          <div class="gallery-item reveal">
+            <div class="gallery-placeholder">RACE PHOTO</div>
+          </div>
+          <div class="gallery-item reveal">
+            <div class="gallery-placeholder">RACE PHOTO</div>
+          </div>
+          <div class="gallery-item reveal">
+            <div class="gallery-placeholder">RACE PHOTO</div>
+          </div>
+          <div class="gallery-item reveal">
+            <div class="gallery-placeholder">RACE PHOTO</div>
+          </div>
+          <div class="gallery-item reveal">
+            <div class="gallery-placeholder">RACE PHOTO</div>
+          </div>
+        </div>
+
+        <div class="results-section">
+          <h3>Nos résultats</h3>
+          <div class="races-table-wrap">
+            <table class="races-table" aria-label="Résultats du club">
+              <thead>
+                <tr>
+                  <th data-col="0">Athlète</th>
+                  <th data-col="1">Ville</th>
+                  <th data-col="2">Temps</th>
+                  <th data-col="3">Classement</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Lucas M.</td><td>Paris</td><td>1h08</td><td>Top 30%</td></tr>
+                <tr><td>Camille D.</td><td>Lyon</td><td>1h22</td><td>Top 20%</td></tr>
+                <tr><td>Théo B.</td><td>Bordeaux</td><td>59 min</td><td>Top 10%</td></tr>
+                <tr><td>Sarah L.</td><td>Paris</td><td>1h31</td><td>Top 40%</td></tr>
+                <tr><td>Antoine K.</td><td>Lille</td><td>1h15</td><td>Top 25%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 6 — TEMOIGNAGES ===== -->
+    <section id="temoignages" class="section-dark" aria-labelledby="temoignages-title">
+      <div class="container">
+        <span class="eyebrow">TEMOIGNAGES</span>
+        <h2 id="temoignages-title" class="section-title" data-scramble="Ils ont show up.">Ils ont show up.</h2>
+        <p class="section-subtitle">Maintenant c'est leur vibe.</p>
+
+        <div class="carousel-wrap" role="region" aria-label="Témoignages">
+          <div class="carousel-track" tabindex="0">
+            <article class="testimonial-card">
+              <div class="testimonial-stars" aria-label="5 étoiles">★★★★★</div>
+              <p class="testimonial-text">"Je savais même pas ce qu'était Hyrox. Maintenant je peux plus m'en passer."</p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar" aria-hidden="true">L</div>
+                <div>
+                  <div class="testimonial-author-name">Lucas</div>
+                  <div class="testimonial-author-city">Le Havre</div>
+                </div>
+              </div>
+            </article>
+            <article class="testimonial-card">
+              <div class="testimonial-stars" aria-label="5 étoiles">★★★★★</div>
+              <p class="testimonial-text">"J'avais peur d'être la plus nulle. Personne s'en fout ici."</p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar" aria-hidden="true">C</div>
+                <div>
+                  <div class="testimonial-author-name">Camille</div>
+                  <div class="testimonial-author-city">Rouen</div>
+                </div>
+              </div>
+            </article>
+            <article class="testimonial-card">
+              <div class="testimonial-stars" aria-label="5 étoiles">★★★★★</div>
+              <p class="testimonial-text">"La première fois j'ai fini dernier. La deuxième j'ai battu mon temps. C'est ça Frox."</p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar" aria-hidden="true">T</div>
+                <div>
+                  <div class="testimonial-author-name">Théo</div>
+                  <div class="testimonial-author-city">Le Havre</div>
+                </div>
+              </div>
+            </article>
+            <article class="testimonial-card">
+              <div class="testimonial-stars" aria-label="5 étoiles">★★★★★</div>
+              <p class="testimonial-text">"J'avais jamais fait de sport de ma vie. Frox m'a changé."</p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar" aria-hidden="true">S</div>
+                <div>
+                  <div class="testimonial-author-name">Sarah</div>
+                  <div class="testimonial-author-city">Caen</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="carousel-controls">
+          <button class="carousel-btn prev" aria-label="Témoignage précédent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M10 3L5 8l5 5"/>
+            </svg>
+          </button>
+          <div class="carousel-dots" role="list" aria-label="Navigation témoignages">
+            <button class="carousel-dot active" aria-label="Témoignage 1" role="listitem"></button>
+            <button class="carousel-dot" aria-label="Témoignage 2" role="listitem"></button>
+            <button class="carousel-dot" aria-label="Témoignage 3" role="listitem"></button>
+            <button class="carousel-dot" aria-label="Témoignage 4" role="listitem"></button>
+          </div>
+          <button class="carousel-btn next" aria-label="Témoignage suivant">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M6 3l5 5-5 5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 7 — INSCRIPTION ===== -->
+    <section id="rejoindre" aria-labelledby="rejoindre-title">
+      <div class="container">
+        <span class="eyebrow">REJOINDRE</span>
+        <h2 id="rejoindre-title" class="section-title">T'attends quoi ?</h2>
+        <p class="section-subtitle">Show up. Le reste, on s'en occupe.</p>
+
+        <form id="form-inscription" class="form-frox" data-netlify="true" name="inscription-frox" novalidate>
+          <input type="hidden" name="form-name" value="inscription-frox">
+
+          <input
+            type="text"
+            name="prenom"
+            id="input-prenom"
+            placeholder="C'est quoi ton prénom ?"
+            required
+            autocomplete="given-name"
+            aria-label="Ton prénom"
+          >
+
+          <input
+            type="email"
+            name="email"
+            id="input-email"
+            placeholder="Ton email"
+            required
+            autocomplete="email"
+            aria-label="Ton email"
+          >
+
+          <div class="form-select-wrap">
+            <select name="programme" id="input-programme" required aria-label="Choisis ton programme">
+              <option value="" disabled selected>Ton game ?</option>
+              <option value="lean">Lean — Endurance (Runner)</option>
+              <option value="athletic">Athletic — Complet (Hyrox)</option>
+              <option value="power">Power — Force (Beast)</option>
+            </select>
+          </div>
+
+          <button type="submit" id="form-submit" class="btn-submit magnetic" aria-label="S'inscrire à FROX">
+            Je montre up &rarr;
+          </button>
+          <p class="form-microcopy">Pas d'engagement. Juste une première session.</p>
+        </form>
+
+        <div class="rejoindre-contact">
+          <a href="mailto:hello@frox.fr">hello@frox.fr</a>
+          <a href="tel:+33600000000">+33 6 00 00 00 00</a>
+          <a href="https://instagram.com/froxhyrox" target="_blank" rel="noopener noreferrer">@froxhyrox</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#hero" class="nav-logo" aria-label="FROX accueil">FROX</a>
+          <p class="footer-tagline">Pain is temporary.<br>Vibes are forever.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Navigation</h5>
+          <ul class="footer-links" role="list">
+            <li><a href="#hyrox">Hyrox</a></li>
+            <li><a href="#mindset">Mindset</a></li>
+            <li><a href="#programmes">Programmes</a></li>
+            <li><a href="#races">Races</a></li>
+            <li><a href="#rejoindre">Rejoindre</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Réseaux</h5>
+          <div class="footer-social">
+            <a href="https://instagram.com/froxhyrox" target="_blank" rel="noopener noreferrer" aria-label="Instagram FROX">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
+            <a href="https://tiktok.com/@froxhyrox" target="_blank" rel="noopener noreferrer" aria-label="TikTok FROX">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+              </svg>
+            </a>
+            <a href="https://youtube.com/@froxhyrox" target="_blank" rel="noopener noreferrer" aria-label="YouTube FROX">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="3"/>
+                <polygon points="10,9 16,12 10,15" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="container" style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:0.75rem">
+        <span>&copy; 2026 FROX &mdash; Site créé par <a href="https://aminyo.fr" target="_blank" rel="noopener noreferrer">Aminyo</a></span>
+        <div style="display:flex; gap:1.5rem">
+          <a href="#mentions">Mentions légales</a>
+          <a href="#confidentialite">Politique de confidentialité</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== AVATAR MODAL ===== -->
+  <div id="avatar-modal" role="dialog" aria-modal="true" aria-label="Personnalisateur d'avatar FROX">
+    <div class="avatar-modal-header">
+      <div class="avatar-welcome-text" aria-live="polite"></div>
+      <button id="avatar-close-btn" class="avatar-modal-close" aria-label="Fermer le personnalisateur">&times;</button>
+    </div>
+
+    <div class="avatar-modal-body">
+      <!-- Controls Column -->
+      <div class="avatar-controls-col">
+        <div class="avatar-tabs" role="tablist" aria-label="Options avatar">
+          <button class="tab-btn active" data-tab="genre" role="tab" aria-selected="true" aria-controls="tab-genre">Genre</button>
+          <button class="tab-btn" data-tab="morpho" role="tab" aria-selected="false" aria-controls="tab-morpho">Morpho</button>
+          <button class="tab-btn" data-tab="peau" role="tab" aria-selected="false" aria-controls="tab-peau">Peau</button>
+          <button class="tab-btn" data-tab="visage" role="tab" aria-selected="false" aria-controls="tab-visage">Visage</button>
+          <button class="tab-btn" data-tab="coiffure" role="tab" aria-selected="false" aria-controls="tab-coiffure">Coiffure</button>
+          <button class="tab-btn" data-tab="tenue" role="tab" aria-selected="false" aria-controls="tab-tenue">Tenue</button>
+          <button class="tab-btn" data-tab="shoes" role="tab" aria-selected="false" aria-controls="tab-shoes">Shoes</button>
+          <button class="tab-btn" data-tab="access" role="tab" aria-selected="false" aria-controls="tab-access">Access</button>
+        </div>
+
+        <div class="tab-panels">
+          <div id="tab-genre" class="tab-panel active" role="tabpanel"></div>
+          <div id="tab-morpho" class="tab-panel" role="tabpanel"></div>
+          <div id="tab-peau" class="tab-panel" role="tabpanel"></div>
+          <div id="tab-visage" class="tab-panel" role="tabpanel"></div>
+          <div id="tab-coiffure" class="tab-panel" role="tabpanel"></div>
+          <div id="tab-tenue" class="tab-panel" role="tabpanel"></div>
+          <div id="tab-shoes" class="tab-panel" role="tabpanel"></div>
+          <div id="tab-access" class="tab-panel" role="tabpanel"></div>
+        </div>
+      </div>
+
+      <!-- Canvas Column -->
+      <div class="avatar-canvas-col">
+        <div class="canvas-wrapper">
+          <div class="avatar-loading">
+            <p class="loading-text">Chargement 0%</p>
+            <div class="loading-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="loading-bar"></div>
+            </div>
+          </div>
+          <canvas id="avatar-canvas" aria-label="Aperçu de ton avatar FROX"></canvas>
+        </div>
+
+        <div id="avatar-programme-panel" class="avatar-programme-panel"></div>
+
+        <div class="avatar-actions">
+          <button id="avatar-download-btn" class="btn-primary" style="font-size:0.85rem; padding:0.8rem 1.8rem">
+            Télécharger mon avatar
+          </button>
+          <button id="avatar-back-btn" class="btn-secondary" style="font-size:0.8rem; padding:0.75rem 1.5rem">
+            Retour au site
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Observer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="scramble.js"></script>
+  <script src="avatar.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
