@@ -365,11 +365,18 @@ function drawDossard() {
   ctx.drawImage(img, 0, 0, CANVAS_W, CANVAS_H);
 
   ctx.save();
-  ctx.font = `bold 34px Syne, 'Arial Black', sans-serif`;
-  ctx.fillStyle = '#FFE000';
+  // Prenom replaces "ELITE RUNNER" on the NAME: line at bottom of dossard
+  // nameX = position after "NAME:" label — adjust if needed
+  // nameY = vertical position of the NAME: row — adjust if needed
+  const nameX = CANVAS_W * 0.62;
+  const nameY = CANVAS_H * 0.872;
+  ctx.fillStyle = '#0A0A0A'; // match dossard background to erase "ELITE RUNNER"
+  ctx.fillRect(nameX - 130, nameY - 16, 262, 32);
+  ctx.font = `bold 20px 'DM Sans', Arial, sans-serif`;
+  ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(state.prenom.toUpperCase().slice(0, 12), CANVAS_W * 0.5, CANVAS_H * 0.555);
+  ctx.fillText(state.prenom.toUpperCase().slice(0, 14), nameX, nameY);
   ctx.restore();
 }
 
@@ -381,7 +388,10 @@ function renderAvatar() {
   const morpho = state.morpho;
   const carn = state.carnation;
 
-  // 1. Corps
+  // Morpho scale applied to all layers above corps
+  const ms = MORPHO_SCALE[morpho] || MORPHO_SCALE.athletic;
+
+  // 1. Corps (uses morpho-specific PNG — no canvas transform)
   const corpsData = A.corps[genre];
   const morphoKey = (genre === 'femme' && morpho === 'power') ? 'athletic' : morpho;
   const corpsPath = corpsData?.[morphoKey]?.[carn];
@@ -389,21 +399,20 @@ function renderAvatar() {
 
   // 2. Yeux
   const yeuxPath = A.yeux[genre]?.[state.yeux];
-  if (yeuxPath) drawLayer(yeuxPath);
+  if (yeuxPath) drawLayer(yeuxPath, ms);
 
   // 3. Cheveux
   const chevData = genre === 'homme' ? A.cheveux_h : A.cheveux_f;
   const chevFn = chevData[state.cheveux_style];
-  if (chevFn) drawLayer(chevFn(state.cheveux_couleur));
+  if (chevFn) drawLayer(chevFn(state.cheveux_couleur), ms);
 
   // 4. Barbe (homme uniquement)
   if (genre === 'homme' && state.barbe !== 'rase') {
     const barbePath = A.barbe[state.barbe];
-    if (barbePath) drawLayer(barbePath);
+    if (barbePath) drawLayer(barbePath, ms);
   }
 
   // 5. Tenue bas
-  const ms = MORPHO_SCALE[morpho];
   const basData = genre === 'homme' ? A.tenue_bas_h : A.tenue_bas_f;
   const basKey = (genre === 'femme' && state.tenue_bas === 'rouge') ? 'noir' : state.tenue_bas;
   const basPath = basData[basKey];
@@ -422,13 +431,13 @@ function renderAvatar() {
   // 8. Accessoires corps
   state.acc_corps.forEach(key => {
     const p = A.acc_corps[key];
-    if (p) drawLayer(p);
+    if (p) drawLayer(p, ms);
   });
 
   // 9. Accessoires tête
   state.acc_tete.forEach(key => {
     const p = A.acc_tete[key];
-    if (p) drawLayer(p);
+    if (p) drawLayer(p, ms);
   });
 
   // 10. Dossard (toujours en dernier)
