@@ -289,6 +289,7 @@ let state = {
   shoes: 'nike_metcon',
   acc_tete: new Set(),
   acc_corps: new Set(),
+  showDossard: false,
 };
 
 /* ===== CANVAS SETUP ===== */
@@ -345,106 +346,156 @@ async function preloadImages(onProgress) {
   })));
 }
 
-function drawLayer(src, morphScale) {
+function drawLayer(src) {
   const img = imageCache[src];
   if (!img || !img.complete || img.naturalWidth === 0) return;
-  ctx.save();
-  if (morphScale) {
-    const { sx, sy, tx, ty } = morphScale;
-    ctx.transform(sx, 0, 0, sy, tx * CANVAS_W, ty * CANVAS_H);
-  }
   ctx.drawImage(img, 0, 0, CANVAS_W, CANVAS_H);
-  ctx.restore();
 }
 
 function drawDossard() {
+  if (!state.showDossard) return;
   const img = imageCache[A.dossard];
   if (!img || !img.complete || img.naturalWidth === 0) return;
-  ctx.drawImage(img, 0, 0, CANVAS_W, CANVAS_H);
-
-  // Prénom rendu directement sur le dossard PNG, à la place de "ELITE RUNNER"
-  // Ajuste nameX/nameY si la position ne correspond pas exactement au PNG
   ctx.save();
-  ctx.font = `bold 20px 'DM Sans', Arial, sans-serif`;
-  ctx.fillStyle = '#FFFFFF';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(state.prenom.toUpperCase().slice(0, 14), CANVAS_W * 0.62, CANVAS_H * 0.872);
+  ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+  ctx.drawImage(img, 0, 0, CANVAS_W, CANVAS_H);
+  if (state.prenom) {
+    ctx.font = `bold 20px 'DM Sans','Inter',Arial,sans-serif`;
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(state.prenom.toUpperCase().slice(0, 14), CANVAS_W * 0.62, CANVAS_H * 0.872);
+  }
   ctx.restore();
 }
 
-// Rendu brut — appelé uniquement par renderAvatar (via fade)
 function _renderFrame() {
   if (!ctx) return;
-  ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
-
-  // Layer 0 — fond noir, jamais de damier visible
+  ctx.save();
+  
+  // 0. Fond noir total — jamais de damier visible
   ctx.fillStyle = '#0a0a0a';
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-  const genre = state.genre;
-  const morpho = state.morpho;
-  const carn = state.carnation;
-  const ms = MORPHO_SCALE[morpho] || MORPHO_SCALE.athletic;
+  const g = state.genre;
+  const m = state.morpho;
+  const c = state.carnation;
+  const ms = MORPHO_SCALE[m] || MORPHO_SCALE.athletic;
 
-  // 1. Corps (PNG morpho-spécifique — pas de transform canvas)
-  const morphoKey = (genre === 'femme' && morpho === 'power') ? 'athletic' : morpho;
-  const corpsPath = A.corps[genre]?.[morphoKey]?.[carn];
-  if (corpsPath) drawLayer(corpsPath);
+  // 1. CORPS — morphologie + carnation
+  // power n'existe pas pour femme → fallback athletic
+  const morphoKey = (g === 'femme' && m === 'power') ? 'athletic' : m;
+  const corpsSrc = A.corps[g]?.[morphoKey]?.[c];
+  if (corpsSrc && imageCache[corpsSrc]) {
+    ctx.save();
+    ctx.transform(ms.sx, 0, 0, ms.sy, ms.tx * CANVAS_W, ms.ty * CANVAS_H);
+    ctx.drawImage(imageCache[corpsSrc], 0, 0, CANVAS_W, CANVAS_H);
+    ctx.restore();
+  }
 
-  // 2. Yeux
-  const yeuxPath = A.yeux[genre]?.[state.yeux];
-  if (yeuxPath) drawLayer(yeuxPath, ms);
+  // 2. YEUX
+  const yeuxSrc = A.yeux[g]?.[state.yeux];
+  if (yeuxSrc && imageCache[yeuxSrc]) {
+    ctx.save();
+    ctx.transform(ms.sx, 0, 0, ms.sy, ms.tx * CANVAS_W, ms.ty * CANVAS_H);
+    ctx.drawImage(imageCache[yeuxSrc], 0, 0, CANVAS_W, CANVAS_H);
+    ctx.restore();
+  }
 
-  // 3. Cheveux
-  const chevFn = (genre === 'homme' ? A.cheveux_h : A.cheveux_f)[state.cheveux_style];
+  // 3. CHEVEUX
+  const chevFn = (g === 'homme' ? A.cheveux_h : A.cheveux_f)[state.cheveux_style];
   if (chevFn) {
-    const chevPath = chevFn(state.cheveux_couleur);
-    if (chevPath) drawLayer(chevPath, ms);
+    const chevSrc = chevFn(state.cheveux_couleur);
+    if (chevSrc && imageCache[chevSrc]) {
+      ctx.save();
+      ctx.transform(ms.sx, 0, 0, ms.sy, ms.tx * CANVAS_W, ms.ty * CANVAS_H);
+      ctx.drawImage(imageCache[chevSrc], 0, 0, CANVAS_W, CANVAS_H);
+      ctx.restore();
+    }
   }
 
-  // 4. Barbe (homme uniquement, hors rase)
-  if (genre === 'homme' && state.barbe !== 'rase') {
-    const barbePath = A.barbe[state.barbe];
-    if (barbePath) drawLayer(barbePath, ms);
+  // 4. BARBE
+  if (g === 'homme' && state.barbe !== 'rase') {
+    const barbeSrc = A.barbe[state.barbe];
+    if (barbeSrc && imageCache[barbeSrc]) {
+      ctx.save();
+      ctx.transform(ms.sx, 0, 0, ms.sy, ms.tx * CANVAS_W, ms.ty * CANVAS_H);
+      ctx.drawImage(imageCache[barbeSrc], 0, 0, CANVAS_W, CANVAS_H);
+      ctx.restore();
+    }
   }
 
-  // 5. Tenue bas
-  const basKey = (genre === 'femme' && state.tenue_bas === 'rouge') ? 'noir' : state.tenue_bas;
-  const basPath = (genre === 'homme' ? A.tenue_bas_h : A.tenue_bas_f)[basKey];
-  if (basPath) drawLayer(basPath, ms);
+  // 5. TENUE BAS
+  const basKey = (g === 'femme' && state.tenue_bas === 'rouge') ? 'noir' : state.tenue_bas;
+  const basSrc = (g === 'homme' ? A.tenue_bas_h : A.tenue_bas_f)[basKey];
+  if (basSrc && imageCache[basSrc]) {
+    ctx.save();
+    ctx.transform(ms.sx, 0, 0, ms.sy, ms.tx * CANVAS_W, ms.ty * CANVAS_H);
+    ctx.drawImage(imageCache[basSrc], 0, 0, CANVAS_W, CANVAS_H);
+    ctx.restore();
+  }
 
-  // 6. Tenue haut
-  const hautPath = (genre === 'homme' ? A.tenue_haut_h : A.tenue_haut_f)[state.tenue_haut];
-  if (hautPath) drawLayer(hautPath, ms);
+  // 6. TENUE HAUT
+  const hautSrc = (g === 'homme' ? A.tenue_haut_h : A.tenue_haut_f)[state.tenue_haut];
+  if (hautSrc && imageCache[hautSrc]) {
+    ctx.save();
+    ctx.transform(ms.sx, 0, 0, ms.sy, ms.tx * CANVAS_W, ms.ty * CANVAS_H);
+    ctx.drawImage(imageCache[hautSrc], 0, 0, CANVAS_W, CANVAS_H);
+    ctx.restore();
+  }
 
-  // 7. Chaussures
-  const shoesPath = (genre === 'homme' ? A.shoes_h : A.shoes_f)[state.shoes];
-  if (shoesPath) drawLayer(shoesPath, ms);
+  // 7. CHAUSSURE
+  const shoeSrc = (g === 'homme' ? A.shoes_h : A.shoes_f)[state.shoes];
+  if (shoeSrc && imageCache[shoeSrc]) {
+    ctx.save();
+    ctx.transform(ms.sx, 0, 0, ms.sy, ms.tx * CANVAS_W, ms.ty * CANVAS_H);
+    ctx.drawImage(imageCache[shoeSrc], 0, 0, CANVAS_W, CANVAS_H);
+    ctx.restore();
+  }
 
-  // 8. Accessoires corps
-  state.acc_corps.forEach(key => { const p = A.acc_corps[key]; if (p) drawLayer(p, ms); });
+  // 8. ACCESSOIRES CORPS
+  state.acc_corps.forEach(key => {
+    const src = A.acc_corps[key];
+    if (src && imageCache[src]) {
+      ctx.save();
+      ctx.transform(ms.sx, 0, 0, ms.sy, ms.tx * CANVAS_W, ms.ty * CANVAS_H);
+      ctx.drawImage(imageCache[src], 0, 0, CANVAS_W, CANVAS_H);
+      ctx.restore();
+    }
+  });
 
-  // 9. Accessoires tête
-  state.acc_tete.forEach(key => { const p = A.acc_tete[key]; if (p) drawLayer(p, ms); });
+  // 9. ACCESSOIRES TETE
+  state.acc_tete.forEach(key => {
+    const src = A.acc_tete[key];
+    if (src && imageCache[src]) {
+      ctx.save();
+      ctx.transform(ms.sx, 0, 0, ms.sy, ms.tx * CANVAS_W, ms.ty * CANVAS_H);
+      ctx.drawImage(imageCache[src], 0, 0, CANVAS_W, CANVAS_H);
+      ctx.restore();
+    }
+  });
 
-  // 10. Dossard — toujours dernier layer
+  // 10. DOSSARD — seulement si showDossard est true
   drawDossard();
+
+  ctx.restore();
 }
 
-// Rendu avec fade 150ms (70ms out → render → 80ms in)
 let _fadeTl = null;
 function renderAvatar() {
   if (_fadeTl) { _fadeTl.kill(); _fadeTl = null; }
   if (!canvas || !ctx) return;
-  gsap.set(canvas, { opacity: 1 }); // reset si tween tué en cours de route
+  // Reset opacity before any transition
+  canvas.style.opacity = '1';
   _fadeTl = gsap.timeline({ onComplete: () => { _fadeTl = null; } })
-    .to(canvas, { opacity: 0.55, duration: 0.07, ease: 'power1.in' })
-    .call(_renderFrame)
+    .to(canvas, { opacity: 0.5, duration: 0.06, ease: 'power1.in' })
+    .call(() => {
+      _renderFrame();
+      // Reset canvas CSS background just in case
+      canvas.style.background = '#0a0a0a';
+    })
     .to(canvas, { opacity: 1, duration: 0.08, ease: 'power1.out' });
-}
-
-/* ===== UI BUILDERS ===== */
+}/* ===== UI BUILDERS ===== */
 function buildUI() {
   buildGenreTab();
   buildMorphoTab();
@@ -759,14 +810,21 @@ function initTabs() {
 
 /* ===== DOWNLOAD ===== */
 function downloadAvatar() {
+  // Temporarily render with dossard
+  state.showDossard = true;
+  _renderFrame();
+
   const tmpCanvas = document.createElement('canvas');
   tmpCanvas.width = CANVAS_W;
   tmpCanvas.height = CANVAS_H;
   const tmpCtx = tmpCanvas.getContext('2d');
+  tmpCtx.fillStyle = '#0a0a0a';
+  tmpCtx.fillRect(0, 0, CANVAS_W, CANVAS_H);
   tmpCtx.drawImage(canvas, 0, 0);
 
+  // Watermark FROX toujours visible
   tmpCtx.save();
-  tmpCtx.font = '14px DM Sans, sans-serif';
+  tmpCtx.font = '14px "DM Sans", "Inter", Arial, sans-serif';
   tmpCtx.fillStyle = 'rgba(255,224,0,0.45)';
   tmpCtx.textAlign = 'center';
   tmpCtx.fillText('FROX — frox.fr', CANVAS_W * 0.5, CANVAS_H - 18);
@@ -826,6 +884,17 @@ function initAvatarModal(prenom, programme) {
   });
 
   document.getElementById('avatar-download-btn')?.addEventListener('click', downloadAvatar);
+  
+  // Toggle dossard button
+  const toggleBtn = document.getElementById('avatar-dossard-toggle');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      state.showDossard = !state.showDossard;
+      toggleBtn.classList.toggle('active', state.showDossard);
+      toggleBtn.textContent = state.showDossard ? 'Dossard ✓' : '+ Dossard';
+      renderAvatar();
+    });
+  }
 }
 
 window.initAvatarModal = initAvatarModal;
