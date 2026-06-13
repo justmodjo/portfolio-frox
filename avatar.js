@@ -278,7 +278,7 @@ let state = {
   prenom: '',
   programme: 'athletic',
   genre: 'homme',
-  morpho: 'athletic',
+  morpho: 'athletic',   // LEAN | ATHLETIC | POWER — détermine la variante de chaque layer
   carnation: 'clair1',
   yeux: 'marron',
   cheveux_style: 'courts',
@@ -345,16 +345,11 @@ async function preloadImages(onProgress) {
   })));
 }
 
-function drawLayer(src, morphScale) {
+// Tous les layers : même position, même taille — aucune transform
+function drawLayer(src) {
   const img = imageCache[src];
   if (!img || !img.complete || img.naturalWidth === 0) return;
-  ctx.save();
-  if (morphScale) {
-    const { sx, sy, tx, ty } = morphScale;
-    ctx.transform(sx, 0, 0, sy, tx * CANVAS_W, ty * CANVAS_H);
-  }
   ctx.drawImage(img, 0, 0, CANVAS_W, CANVAS_H);
-  ctx.restore();
 }
 
 function drawDossard() {
@@ -374,59 +369,54 @@ function drawDossard() {
 }
 
 // Rendu brut — appelé uniquement par renderAvatar (via fade)
+// PRINCIPE : tous les layers = ctx.drawImage(img, 0, 0, CANVAS_W, CANVAS_H), aucune transform
+// MORPHO = quelle variante de fichier charger, pas comment le dessiner
 function _renderFrame() {
   if (!ctx) return;
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
 
-  // Layer 0 — fond noir, jamais de damier visible
+  // Layer 0 — fond noir absolu (+ background CSS sur #avatar-canvas en secours)
   ctx.fillStyle = '#0a0a0a';
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-  const genre = state.genre;
-  const morpho = state.morpho;
-  const carn = state.carnation;
-  const ms = MORPHO_SCALE[morpho] || MORPHO_SCALE.athletic;
+  const g = state.genre;
+  const morpho = (g === 'femme' && state.morpho === 'power') ? 'athletic' : state.morpho;
 
-  // 1. Corps (PNG morpho-spécifique — pas de transform canvas)
-  const morphoKey = (genre === 'femme' && morpho === 'power') ? 'athletic' : morpho;
-  const corpsPath = A.corps[genre]?.[morphoKey]?.[carn];
+  // 1. Corps de base (PNG morpho-spécifique — référence absolue)
+  const corpsPath = A.corps[g]?.[morpho]?.[state.carnation];
   if (corpsPath) drawLayer(corpsPath);
 
   // 2. Yeux
-  const yeuxPath = A.yeux[genre]?.[state.yeux];
-  if (yeuxPath) drawLayer(yeuxPath, ms);
+  const yeuxPath = A.yeux[g]?.[state.yeux];
+  if (yeuxPath) drawLayer(yeuxPath);
 
   // 3. Cheveux
-  const chevFn = (genre === 'homme' ? A.cheveux_h : A.cheveux_f)[state.cheveux_style];
-  if (chevFn) {
-    const chevPath = chevFn(state.cheveux_couleur);
-    if (chevPath) drawLayer(chevPath, ms);
-  }
+  const chevFn = (g === 'homme' ? A.cheveux_h : A.cheveux_f)[state.cheveux_style];
+  if (chevFn) { const p = chevFn(state.cheveux_couleur); if (p) drawLayer(p); }
 
   // 4. Barbe (homme uniquement, hors rase)
-  if (genre === 'homme' && state.barbe !== 'rase') {
-    const barbePath = A.barbe[state.barbe];
-    if (barbePath) drawLayer(barbePath, ms);
+  if (g === 'homme' && state.barbe !== 'rase') {
+    const p = A.barbe[state.barbe]; if (p) drawLayer(p);
   }
 
   // 5. Tenue bas
-  const basKey = (genre === 'femme' && state.tenue_bas === 'rouge') ? 'noir' : state.tenue_bas;
-  const basPath = (genre === 'homme' ? A.tenue_bas_h : A.tenue_bas_f)[basKey];
-  if (basPath) drawLayer(basPath, ms);
+  const basKey = (g === 'femme' && state.tenue_bas === 'rouge') ? 'noir' : state.tenue_bas;
+  const basPath = (g === 'homme' ? A.tenue_bas_h : A.tenue_bas_f)[basKey];
+  if (basPath) drawLayer(basPath);
 
   // 6. Tenue haut
-  const hautPath = (genre === 'homme' ? A.tenue_haut_h : A.tenue_haut_f)[state.tenue_haut];
-  if (hautPath) drawLayer(hautPath, ms);
+  const hautPath = (g === 'homme' ? A.tenue_haut_h : A.tenue_haut_f)[state.tenue_haut];
+  if (hautPath) drawLayer(hautPath);
 
   // 7. Chaussures
-  const shoesPath = (genre === 'homme' ? A.shoes_h : A.shoes_f)[state.shoes];
-  if (shoesPath) drawLayer(shoesPath, ms);
+  const shoesPath = (g === 'homme' ? A.shoes_h : A.shoes_f)[state.shoes];
+  if (shoesPath) drawLayer(shoesPath);
 
   // 8. Accessoires corps
-  state.acc_corps.forEach(key => { const p = A.acc_corps[key]; if (p) drawLayer(p, ms); });
+  state.acc_corps.forEach(key => { const p = A.acc_corps[key]; if (p) drawLayer(p); });
 
   // 9. Accessoires tête
-  state.acc_tete.forEach(key => { const p = A.acc_tete[key]; if (p) drawLayer(p, ms); });
+  state.acc_tete.forEach(key => { const p = A.acc_tete[key]; if (p) drawLayer(p); });
 
   // 10. Dossard — toujours dernier layer
   drawDossard();

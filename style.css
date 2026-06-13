@@ -1070,6 +1070,7 @@ footer {
   width: auto;
   height: auto;
   display: block;
+  background: #0a0a0a; /* fond de secours si pixel transparent */
   image-rendering: crisp-edges;
 }
 .avatar-actions {
