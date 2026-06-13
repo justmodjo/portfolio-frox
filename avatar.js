@@ -196,11 +196,7 @@ const A = {
       };
       return CLOUD_URLS[c] || CLOUD_URLS["noir"];
     },
-    afro: c => {
-      const CLOUD_URLS = {
-      };
-      return CLOUD_URLS[c] || CLOUD_URLS["noir"];
-    },
+    afro: () => null, // asset non disponible
   },
   barbe: {
     rase: "https://res.cloudinary.com/dsbgqfcd3/image/upload/h_barbe_rase_k3rcmv.png",
@@ -315,8 +311,8 @@ function getAllPaths() {
   });
 
   couleurs.forEach(c => {
-    Object.values(A.cheveux_h).forEach(fn => paths.add(fn(c)));
-    Object.values(A.cheveux_f).forEach(fn => paths.add(fn(c)));
+    Object.values(A.cheveux_h).forEach(fn => { const p = fn(c); if (p) paths.add(p); });
+    Object.values(A.cheveux_f).forEach(fn => { const p = fn(c); if (p) paths.add(p); });
   });
 
   Object.values(A.barbe).forEach(p => paths.add(p));
@@ -330,19 +326,21 @@ function getAllPaths() {
   Object.values(A.acc_corps).forEach(p => paths.add(p));
   paths.add(A.dossard);
 
-  return Array.from(paths);
+  // Filter out any null/undefined from missing assets (ex: afro femme)
+  return Array.from(paths).filter(p => typeof p === 'string' && p.length > 0);
 }
 
 async function preloadImages(onProgress) {
   const paths = getAllPaths();
-  totalImages = paths.length;
-  loadedImages = 0;
+  const total = paths.length;
+  let loaded = 0;
 
   await Promise.all(paths.map(path => new Promise(resolve => {
-    if (imageCache[path]) { loadedImages++; onProgress?.(loadedImages / totalImages); resolve(); return; }
+    if (imageCache[path]) { loaded++; onProgress?.(loaded / total); resolve(); return; }
     const img = new Image();
-    img.onload = () => { imageCache[path] = img; loadedImages++; onProgress?.(loadedImages / totalImages); resolve(); };
-    img.onerror = () => { loadedImages++; onProgress?.(loadedImages / totalImages); resolve(); };
+    img.crossOrigin = 'anonymous'; // requis pour canvas cross-origin (Cloudinary)
+    img.onload = () => { imageCache[path] = img; loaded++; onProgress?.(loaded / total); resolve(); };
+    img.onerror = () => { loaded++; onProgress?.(loaded / total); resolve(); };
     img.src = path;
   })));
 }
@@ -361,40 +359,37 @@ function drawLayer(src, morphScale) {
 
 function drawDossard() {
   const img = imageCache[A.dossard];
-  if (!img || !img.complete) return;
+  if (!img || !img.complete || img.naturalWidth === 0) return;
   ctx.drawImage(img, 0, 0, CANVAS_W, CANVAS_H);
 
+  // Prénom rendu directement sur le dossard PNG, à la place de "ELITE RUNNER"
+  // Ajuste nameX/nameY si la position ne correspond pas exactement au PNG
   ctx.save();
-  // Prenom replaces "ELITE RUNNER" on the NAME: line at bottom of dossard
-  // nameX = position after "NAME:" label — adjust if needed
-  // nameY = vertical position of the NAME: row — adjust if needed
-  const nameX = CANVAS_W * 0.62;
-  const nameY = CANVAS_H * 0.872;
-  ctx.fillStyle = '#0A0A0A'; // match dossard background to erase "ELITE RUNNER"
-  ctx.fillRect(nameX - 130, nameY - 16, 262, 32);
   ctx.font = `bold 20px 'DM Sans', Arial, sans-serif`;
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(state.prenom.toUpperCase().slice(0, 14), nameX, nameY);
+  ctx.fillText(state.prenom.toUpperCase().slice(0, 14), CANVAS_W * 0.62, CANVAS_H * 0.872);
   ctx.restore();
 }
 
-function renderAvatar() {
+// Rendu brut — appelé uniquement par renderAvatar (via fade)
+function _renderFrame() {
   if (!ctx) return;
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+  // Layer 0 — fond noir, jamais de damier visible
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
   const genre = state.genre;
   const morpho = state.morpho;
   const carn = state.carnation;
-
-  // Morpho scale applied to all layers above corps
   const ms = MORPHO_SCALE[morpho] || MORPHO_SCALE.athletic;
 
-  // 1. Corps (uses morpho-specific PNG — no canvas transform)
-  const corpsData = A.corps[genre];
+  // 1. Corps (PNG morpho-spécifique — pas de transform canvas)
   const morphoKey = (genre === 'femme' && morpho === 'power') ? 'athletic' : morpho;
-  const corpsPath = corpsData?.[morphoKey]?.[carn];
+  const corpsPath = A.corps[genre]?.[morphoKey]?.[carn];
   if (corpsPath) drawLayer(corpsPath);
 
   // 2. Yeux
@@ -402,46 +397,51 @@ function renderAvatar() {
   if (yeuxPath) drawLayer(yeuxPath, ms);
 
   // 3. Cheveux
-  const chevData = genre === 'homme' ? A.cheveux_h : A.cheveux_f;
-  const chevFn = chevData[state.cheveux_style];
-  if (chevFn) drawLayer(chevFn(state.cheveux_couleur), ms);
+  const chevFn = (genre === 'homme' ? A.cheveux_h : A.cheveux_f)[state.cheveux_style];
+  if (chevFn) {
+    const chevPath = chevFn(state.cheveux_couleur);
+    if (chevPath) drawLayer(chevPath, ms);
+  }
 
-  // 4. Barbe (homme uniquement)
+  // 4. Barbe (homme uniquement, hors rase)
   if (genre === 'homme' && state.barbe !== 'rase') {
     const barbePath = A.barbe[state.barbe];
     if (barbePath) drawLayer(barbePath, ms);
   }
 
   // 5. Tenue bas
-  const basData = genre === 'homme' ? A.tenue_bas_h : A.tenue_bas_f;
   const basKey = (genre === 'femme' && state.tenue_bas === 'rouge') ? 'noir' : state.tenue_bas;
-  const basPath = basData[basKey];
+  const basPath = (genre === 'homme' ? A.tenue_bas_h : A.tenue_bas_f)[basKey];
   if (basPath) drawLayer(basPath, ms);
 
   // 6. Tenue haut
-  const hautData = genre === 'homme' ? A.tenue_haut_h : A.tenue_haut_f;
-  const hautPath = hautData[state.tenue_haut];
+  const hautPath = (genre === 'homme' ? A.tenue_haut_h : A.tenue_haut_f)[state.tenue_haut];
   if (hautPath) drawLayer(hautPath, ms);
 
   // 7. Chaussures
-  const shoesData = genre === 'homme' ? A.shoes_h : A.shoes_f;
-  const shoesPath = shoesData[state.shoes];
+  const shoesPath = (genre === 'homme' ? A.shoes_h : A.shoes_f)[state.shoes];
   if (shoesPath) drawLayer(shoesPath, ms);
 
   // 8. Accessoires corps
-  state.acc_corps.forEach(key => {
-    const p = A.acc_corps[key];
-    if (p) drawLayer(p, ms);
-  });
+  state.acc_corps.forEach(key => { const p = A.acc_corps[key]; if (p) drawLayer(p, ms); });
 
   // 9. Accessoires tête
-  state.acc_tete.forEach(key => {
-    const p = A.acc_tete[key];
-    if (p) drawLayer(p, ms);
-  });
+  state.acc_tete.forEach(key => { const p = A.acc_tete[key]; if (p) drawLayer(p, ms); });
 
-  // 10. Dossard (toujours en dernier)
+  // 10. Dossard — toujours dernier layer
   drawDossard();
+}
+
+// Rendu avec fade 150ms (70ms out → render → 80ms in)
+let _fadeTl = null;
+function renderAvatar() {
+  if (_fadeTl) { _fadeTl.kill(); _fadeTl = null; }
+  if (!canvas || !ctx) return;
+  gsap.set(canvas, { opacity: 1 }); // reset si tween tué en cours de route
+  _fadeTl = gsap.timeline({ onComplete: () => { _fadeTl = null; } })
+    .to(canvas, { opacity: 0.55, duration: 0.07, ease: 'power1.in' })
+    .call(_renderFrame)
+    .to(canvas, { opacity: 1, duration: 0.08, ease: 'power1.out' });
 }
 
 /* ===== UI BUILDERS ===== */
@@ -597,7 +597,6 @@ function buildCoiffureTab() {
     { key: 'bob',      label: 'Bob' },
     { key: 'ponytail', label: 'Ponytail' },
     { key: 'longs',    label: 'Longs' },
-    { key: 'afro',     label: 'Afro' },
     { key: 'tresses',  label: 'Tresses' },
     { key: 'chignon',  label: 'Chignon' },
   ];
@@ -787,6 +786,7 @@ function initAvatarModal(prenom, programme) {
   if (!canvas) return;
   canvas.width = CANVAS_W;
   canvas.height = CANVAS_H;
+  canvas.style.opacity = '0';
   ctx = canvas.getContext('2d');
 
   state.prenom = prenom || '';
@@ -802,16 +802,27 @@ function initAvatarModal(prenom, programme) {
   const loadingEl = document.querySelector('.avatar-loading');
   const loadBar = document.querySelector('.loading-bar');
   const loadText = document.querySelector('.loading-text');
+  const loadBarWrap = document.querySelector('.loading-bar-wrap');
   if (loadingEl) loadingEl.classList.remove('hidden');
 
   preloadImages(progress => {
-    if (loadBar) loadBar.style.width = (progress * 100) + '%';
-    if (loadText) loadText.textContent = `Chargement ${Math.round(progress * 100)}%`;
+    const pct = Math.round(progress * 100);
+    if (loadBar) loadBar.style.width = pct + '%';
+    if (loadBarWrap) loadBarWrap.setAttribute('aria-valuenow', pct);
+    if (loadText) loadText.textContent = `Chargement des layers — ${pct}%`;
   }).then(() => {
-    if (loadingEl) loadingEl.classList.add('hidden');
+    // Cacher le spinner avec fondu
+    if (loadingEl) {
+      gsap.to(loadingEl, {
+        opacity: 0, duration: 0.3, ease: 'power2.in',
+        onComplete: () => loadingEl.classList.add('hidden'),
+      });
+    }
     initTabs();
     buildUI();
-    renderAvatar();
+    // Premier rendu direct + reveal animé du canvas
+    _renderFrame();
+    gsap.fromTo(canvas, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' });
   });
 
   document.getElementById('avatar-download-btn')?.addEventListener('click', downloadAvatar);
